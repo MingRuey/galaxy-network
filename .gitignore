@@ -224,3 +224,6 @@ AppPackages/
 # IDE
 .idea
 .vscode
+
+# model files
+models/

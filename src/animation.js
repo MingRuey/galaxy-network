@@ -11,9 +11,9 @@ const scene = new THREE.Scene()
 scene.add(new THREE.AxesHelper(5))
 
 const light1 = new THREE.PointLight(0xffffff, 1000)
-light1.position.set(2.5, 2.5, 2.5)
+light1.position.set(2.5, 2.5, 10)
 const light2 = new THREE.PointLight(0xffffff, 1000)
-light2.position.set(-2.5, 2.5, 2.5)
+light2.position.set(-2.5, 2.5, 5)
 const camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -37,17 +37,13 @@ controls.target.set(0, 1, 0)
 
 const gltfLoader = new GLTFLoader()
 const model_file = "../models/neon_genesis_evangelion_unit_01.glb"
-THREE.Cache.enabled = true;
-THREE.Cache.add("model_eva", model_file);
+
+let model;
 gltfLoader.load(
     model_file,
     function (gltf) {
-        scene.add(gltf.scene);
-        gltf.animations; // Array<THREE.AnimationClip>
-        gltf.scene; // THREE.Group
-        gltf.scenes; // Array<THREE.Group>
-        gltf.cameras; // Array<THREE.Camera>
-        gltf.asset; // Object
+        model = gltf.scene;
+        scene.add(model);
     },
     function (xhr) {
         console.log((xhr.loaded / xhr.total * 100) + '% loaded');
@@ -71,9 +67,10 @@ const gui = new GUI()
 const animationsFolder = gui.addFolder('Animations')
 animationsFolder.open()
 
-THREE.Cache.enabled = true;
-function animate() {
+function animate(time) {
     requestAnimationFrame(animate)
+    if (model)
+        model.rotation.y = -time / 3000;
     controls.update()
     render()
 }
